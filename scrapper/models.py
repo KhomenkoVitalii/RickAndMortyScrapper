@@ -11,10 +11,10 @@ class Location(models.Model):
 
 
 class Character(models.Model):
-    name = models.CharField(max_length=255, default="unknown", unique=True)
+    name = models.CharField(max_length=255, default="unknown")
     status = models.CharField(max_length=255, default="unknown")
     species = models.CharField(max_length=255, default="unknown")
-    type = models.CharField(max_length=255, default="unknown")
+    type = models.CharField(max_length=255, default="unknown", blank=True)
     gender = models.CharField(max_length=255, default='unknown')
     url = models.CharField(max_length=255)
     created = models.DateTimeField(default=timezone.now, editable=False)
@@ -25,13 +25,13 @@ class Character(models.Model):
     image = models.ImageField(
         upload_to="uploads/images/character/", blank=True)
 
-    episode = models.CharField(max_length=255)
-
 
 class Origin(models.Model):
     name = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
     character_id = models.OneToOneField(Character, on_delete=models.CASCADE)
+    location = models.ForeignKey(
+        to=Location, on_delete=models.DO_NOTHING, null=True, default=None)
 
 
 class Episode(models.Model):
