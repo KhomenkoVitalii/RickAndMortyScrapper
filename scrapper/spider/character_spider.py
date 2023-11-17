@@ -57,6 +57,8 @@ class CharacterSpider:
             character_instance.species = character_data.get('species')
             character_instance.type = character_data.get('type')
             character_instance.gender = character_data.get('gender')
+            character_instance.url = character_data.get('url')
+            character_instance.created = character_data.get('created')
 
             try:
                 location = Location.objects.get(
