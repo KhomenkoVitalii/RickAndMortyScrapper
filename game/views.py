@@ -6,9 +6,11 @@ from django.contrib.auth import login, logout, authenticate
 from scrapper.models import Character
 from scrapper.serializer import CharacterSerializer
 from game.models import UserCard
+from game.mixins import LikeModelMixin
 from game.serializers import UserCardSerializer
 from game.forms import RegisterUserForm, LoginUserForm
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 
 
 def home(request):
@@ -64,6 +66,10 @@ def logout_request(request):
     return redirect('/home/')
 
 
-class UserCardView(ModelViewSet):
+class UserCardView(ModelViewSet, LikeModelMixin):
     queryset = UserCard.objects.all()
     serializer_class = UserCardSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user)
