@@ -6,7 +6,7 @@ class Location(models.Model):
     name = models.CharField(max_length=255, default="unknown", unique=True)
     type = models.CharField(max_length=255, default="unknown", blank=True)
     dimension = models.CharField(max_length=255, default="unknown", blank=True)
-    url = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(default=timezone.now, editable=False)
 
 
@@ -16,7 +16,7 @@ class Character(models.Model):
     species = models.CharField(max_length=255, default="unknown")
     type = models.CharField(max_length=255, default="unknown", blank=True)
     gender = models.CharField(max_length=255, default='unknown')
-    url = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(default=timezone.now, editable=False)
 
     location = models.ForeignKey(
@@ -35,11 +35,11 @@ class Origin(models.Model):
 
 
 class Episode(models.Model):
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=255)
     air_date = models.CharField(max_length=255)
     episode = models.CharField(max_length=255, unique=True)
 
     characters = models.ManyToManyField('Character', related_name='episodes')
 
-    url = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(default=timezone.now, editable=False)
