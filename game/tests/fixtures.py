@@ -29,3 +29,11 @@ def usercard(user, character_card):
     usercard = UserCard.objects.create(
         user_id=user, character_id=character_card)
     return usercard
+
+
+@pytest.fixture
+def usercard_liked(user, character_card):
+    usercard = UserCard.objects.create(
+        user_id=user, character_id=character_card, is_liked=True
+    )
+    return usercard
