@@ -11,7 +11,7 @@ class LikeModelMixin():
         obj = self.get_object()
 
         if obj.is_liked:
-            return Response({"status": "You already liked this post!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "You already liked this card!"}, status=status.HTTP_400_BAD_REQUEST)
 
         obj.is_liked = True
         obj.save()
@@ -22,7 +22,7 @@ class LikeModelMixin():
         obj = self.get_object()
 
         if not obj.is_liked:
-            return Response({"status": "You haven't liked this post!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "You haven't liked this card!"}, status=status.HTTP_400_BAD_REQUEST)
 
         obj.is_liked = False
         obj.save()
