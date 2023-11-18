@@ -1,6 +1,6 @@
 import pytest
 from scrapper.models import Character
-from game.models import User
+from game.models import User, UserCard
 from rest_framework.test import APIClient, force_authenticate
 
 
@@ -18,7 +18,14 @@ def authorized_client(user):
 
 
 @pytest.fixture
-def test_character_card():
+def character_card():
     character = Character.objects.create(
         name="Test Character", status="Alive", url="must_be_unique")
     return character
+
+
+@pytest.fixture
+def usercard(user, character_card):
+    usercard = UserCard.objects.create(
+        user_id=user, character_id=character_card)
+    return usercard
