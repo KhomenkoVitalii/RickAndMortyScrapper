@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom';
+import '../assets/styles/index.scss'
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import Starfield from '../components/background/Starfield';
