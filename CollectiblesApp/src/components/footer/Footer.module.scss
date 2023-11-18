@@ -1,0 +1,37 @@
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px;
+    background-color: #333;
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    padding-left: 30px;
+    padding-right: 30px;
+
+    width: 100vw;
+
+    height: 50px;
+
+    box-sizing: border-box;
+
+    .links {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        a {
+            margin-left: 30px;
+        }
+    }
+
+    img {
+        position: relative;
+        bottom: -5px;
+        max-height: 30px;
+    }
+}
