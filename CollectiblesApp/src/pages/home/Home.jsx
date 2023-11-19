@@ -22,6 +22,9 @@ const Home = () => {
 
     return (
         <>
+            <div className={styles.offer}>
+                <p>COLLECT THEM ALL</p>
+            </div>
             <div className={styles.body}>
                 {data && <Card message={data.characters[0]} />}
                 {data && <Card message={data.characters[1]} />}
