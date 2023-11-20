@@ -20,16 +20,21 @@ const Home = () => {
         fetchData();
     }, []);
 
+    if (!data) {
+        // TODO: Place there <Loading/> component
+        return <p>Loading...</p>;
+    }
+
     return (
         <>
             <div className={styles.offer}>
                 <p>COLLECT THEM ALL</p>
             </div>
             <div className={styles.body}>
-                {data && <Card message={data.characters[0]} />}
-                {data && <Card message={data.characters[1]} />}
-                {data && <Card message={data.characters[2]} />}
-                {data && <Card message={data.characters[3]} />}
+                <Card message={data.characters[0]} />
+                <Card message={data.characters[1]} />
+                <Card message={data.characters[2]} />
+                <Card message={data.characters[3]} />
             </div>
         </>
     );
