@@ -2,7 +2,7 @@ from django.contrib import admin
 from rest_framework import routers
 from django.urls import path, include
 from game.views import sign_in, sign_up, logout_request, home, UserCardView
-from scrapper.views import LocationView, CharacterView, EpisodeView
+from scrapper.views import LocationView, CharacterView, EpisodeView, SeasonEpisodeView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -20,6 +20,8 @@ router.register(r'api/usercard', UserCardView, basename='usercard')
 router.register(r'api/location', LocationView, basename='location')
 router.register(r'api/character', CharacterView, basename='character')
 router.register(r'api/episode', EpisodeView, basename='episode')
+router.register(r'api/seasons-list', SeasonEpisodeView,
+                basename='seasons-list')
 
 
 urlpatterns += router.urls
