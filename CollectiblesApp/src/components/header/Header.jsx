@@ -15,9 +15,9 @@ const Header = () => {
             </div>
             <div className={styles.links}>
                 <Link to='/'>Home</Link>
-                <Link to='/'>Episodes</Link>
-                <Link to='/'>Characters</Link>
-                <Link to='/'>My collections</Link>
+                <Link to='/seasons/'>Seasons</Link>
+                <Link to='/characters/'>Characters</Link>
+                <Link to='/my-collection/'>My collections</Link>
             </div>
         </header>
     </>
