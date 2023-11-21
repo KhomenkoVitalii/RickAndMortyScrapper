@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import styles from './Seasons.module.scss';
 import { getSeasonsCountRequest, getSeasonEpisodesRequest } from '../../api/episode_requests';
 import SeasonComponent from '../../components/season/SeasonComponent';
@@ -10,14 +10,22 @@ const Seasons = () => {
     const [seasonEpisodes, setSeasonEpisodes] = useState(null);
     const [searchParams] = useSearchParams();
 
+    const getEpisodes = useMemo(() => async () => {
+        try {
+            const response = await getSeasonEpisodesRequest(searchParams.get('season'));
+            const data = await response.json();
+            setSeasonEpisodes(data);
+            console.log(data);
+        } catch (error) {
+            console.error('Error fetching episodes:', error);
+        }
+    }, [searchParams]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (searchParams.has('season')) {
-                    const response = await getSeasonEpisodesRequest(searchParams.get('season'));
-                    const data = await response.json();
-                    setSeasonEpisodes(data);
-                    console.log(data);
+                    await getEpisodes();
                 } else {
                     const response = await getSeasonsCountRequest();
                     const data = await response.json();
@@ -30,7 +38,7 @@ const Seasons = () => {
         };
 
         fetchData();
-    }, [searchParams]);
+    }, [searchParams, getEpisodes]);
 
 
     // get the 'season' parameter from the URL
