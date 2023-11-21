@@ -1,7 +1,13 @@
 import BackendPath from "./backend_path"
 
-const getEpisodesCountRequest = async () => {
-    return await fetch(BackendPath.EPISODES_COUNT);
+const getSeasonsCountRequest = async () => {
+    return await fetch(BackendPath.SEASON_COUNT);
 }
 
-export { getEpisodesCountRequest };
+const getSeasonEpisodesRequest = async (number) => {
+    const URL = BackendPath.SEASON_DATA + number;
+    console.log(URL);
+    return await fetch(URL);
+}
+
+export { getSeasonsCountRequest, getSeasonEpisodesRequest };
