@@ -3,6 +3,7 @@ import App from '../pages/App'
 import Home from '../pages/home/Home'
 import Episode from '../pages/episodes/Episode';
 import ErrorComponent from '../components/error/ErrorComponent';
+import Seasons from '../pages/seasons/Seasons';
 
 
 const router = createBrowserRouter([
@@ -16,8 +17,8 @@ const router = createBrowserRouter([
                 element: <Home />
             },
             {
-                path: '/episodes/',
-                element: <Episode />,
+                path: '/seasons/',
+                element: <Seasons />,
             }
         ],
     }
