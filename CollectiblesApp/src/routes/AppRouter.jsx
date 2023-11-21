@@ -4,6 +4,7 @@ import Home from '../pages/home/Home'
 import Episode from '../pages/episodes/Episode';
 import ErrorComponent from '../components/error/ErrorComponent';
 import Seasons from '../pages/seasons/Seasons';
+import Characters from '../pages/characters/Characters';
 
 
 const router = createBrowserRouter([
@@ -19,6 +20,14 @@ const router = createBrowserRouter([
             {
                 path: '/seasons/',
                 element: <Seasons />,
+            },
+            {
+                path: '/characters/',
+                element: <Characters />,
+            },
+            {
+                path: '/my-collections/',
+                element: <ErrorComponent />
             }
         ],
     }
