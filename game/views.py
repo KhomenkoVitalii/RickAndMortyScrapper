@@ -18,7 +18,13 @@ def home(request):
 
     random_characters = random.sample(items, 4)
 
-    return JsonResponse({'characters': CharacterSerializer(random_characters, many=True).data})
+    serialized_characters = CharacterSerializer(
+        random_characters, many=True).data
+
+    for character in serialized_characters:
+        character['image'] = request.build_absolute_uri(character['image'])
+
+    return JsonResponse({'characters': serialized_characters})
 
 
 def sign_in(request, *args, **kwargs):
