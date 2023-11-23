@@ -38,20 +38,30 @@ const SearchBar = () => {
         fetchData();
     }, [value, searchParams]);
 
+    const changeUrl = (url) => {
+        if (url && url != '') {
+            navigate(`/characters/?search=${url}`);
+        } else if (value != '') {
+            navigate(`/characters/?search=${value}`);
+        } else {
+            navigate(`/characters/`);
+        }
+    }
+
     // When confirm search
     // Changing url
     const onSearchButt = (e) => {
         e.preventDefault();
-        navigate(`/characters/?search=${value}`);
+        changeUrl();
     };
 
     // When user choose item from suggestion
     // set value as chosen
-    // Calls confirm search
+    // change url
     const onSuggestionClick = (name) => (e) => {
         e.preventDefault();
         setValue(name);
-        onSearchButt(e);
+        changeUrl(name);
     };
 
     // To hide suggestion
