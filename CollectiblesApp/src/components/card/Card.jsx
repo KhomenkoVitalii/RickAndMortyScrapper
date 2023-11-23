@@ -23,7 +23,6 @@ const Card = (props) => {
     };
 
     const item = props.message;
-    const item_image_path = "http://127.0.0.1:8000" + item.image;
 
     return (
         <div
@@ -35,9 +34,9 @@ const Card = (props) => {
                 transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${isHovered ? 1.3 : 1})`,
             }}
         >
-            <img src={item_image_path} alt={item.name} />
+            <img src={item.image} alt={item.name} />
             <Link to={item.url}>
-                <p>Name: {item.name}</p>
+                <p>{item.name}</p>
             </Link>
         </div>
     );
