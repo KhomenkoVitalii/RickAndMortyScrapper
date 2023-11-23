@@ -1,0 +1,11 @@
+.header {
+    display: flex;
+    justify-content: space-around;
+}
+
+.items {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
