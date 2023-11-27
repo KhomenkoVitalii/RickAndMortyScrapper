@@ -1,7 +1,8 @@
 import BackendPath from "./backend_path"
 
-const getCharacters = (page) => {
-    const URL = BackendPath.CHARACTERS + `?page=${page}`;
+const getCharacters = (request_params) => {
+    const URL = BackendPath.CHARACTERS + request_params;
+    console.log(URL);
     return fetch(URL);
 }
 
