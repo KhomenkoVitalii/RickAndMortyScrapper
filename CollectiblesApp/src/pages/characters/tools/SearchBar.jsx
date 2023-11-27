@@ -10,20 +10,16 @@ const SearchBar = () => {
     const [hideSuggestions, setHideSuggestions] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    // Executed only once 
-    // Checks is the url contains any search params
     useEffect(() => {
         if (searchParams.has('search')) {
             setValue(searchParams.get('search'));
         }
-    }, []);
+    }, [searchParams]);
 
-    // Executed when value changed and when search params changed
-    // Get suggestions
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (value != '') {
+                if (value !== '') {
                     const response = await searchForCharacters(value);
                     const data = await response.json();
                     setSuggestions(data.results);
@@ -37,71 +33,65 @@ const SearchBar = () => {
     }, [value, searchParams]);
 
     const changeUrl = (url) => {
-        if (url && url != '') {
+        if (url && url !== '') {
             searchParams.set('search', url);
-        } else if (value != '') {
+        } else if (value !== '') {
             searchParams.set('search', value);
         } else {
             searchParams.delete('search');
         }
         setSearchParams(searchParams);
-    }
+    };
 
-    // When confirm search
-    // Changing url
     const onSearchButt = (e) => {
         e.preventDefault();
         changeUrl();
     };
 
-    // When user choose item from suggestion
-    // set value as chosen
-    // change url
     const onSuggestionClick = (name) => (e) => {
         e.preventDefault();
         setValue(name);
         changeUrl(name);
     };
 
-    // To hide suggestion
+    const handleBlur = () => {
+        setHideSuggestions(true);
+    };
+
     const handleFocus = () => {
+        // Set hideSuggestions to false when focused
         setHideSuggestions(false);
     };
 
-    const handleBlur = () => {
-        setTimeout(() => {
-            setHideSuggestions(true);
-        }, 200);
-    };
+    // Define a separate style object for visible suggestions
+    const visibleSuggestionsStyle = hideSuggestions ? { visibility: 'hidden' } : {};
 
     return (
-        <>
-            <div className={styles.container}>
-                <form>
-                    <input
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        type="text"
-                        className={styles.textbox}
-                        placeholder="Search data..."
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                    />
-                    <button onClick={onSearchButt}><img src='/search-icon.svg' alt="search icon" /></button>
-                </form>
-                <div className={`${styles.suggestions} ${hideSuggestions && styles.hidden}`}>
-                    {suggestions.map((suggestion) => (
-                        <div
-                            key={suggestion.id}
-                            className={styles.suggestion}
-                            onClick={onSuggestionClick(suggestion.name)}
-                        >
-                            <p>{suggestion.name}</p>
-                        </div>
-                    ))}
-                </div>
+        <div className={styles.container}>
+            <form>
+                <input
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    type="text"
+                    className={styles.textbox}
+                    placeholder="Search data..."
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                />
+                <button onClick={onSearchButt}><img src='/search-icon.svg' alt="search icon" /></button>
+            </form>
+            <div className={styles.suggestions} style={visibleSuggestionsStyle}>
+                {suggestions.map((suggestion) => (
+                    <div
+                        key={suggestion.id}
+                        className={styles.suggestion}
+                        onClick={onSuggestionClick(suggestion.name)}
+                    >
+                        <p>{suggestion.name}</p>
+                    </div>
+                ))}
             </div>
-        </>
+        </div>
     );
 };
 
