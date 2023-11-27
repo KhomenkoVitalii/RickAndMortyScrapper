@@ -11,8 +11,23 @@ const Characters = () => {
 
     const getEpisodes = useMemo(() => async () => {
         try {
-            // if (searchParams.has('page'))
-            const response = await getCharacters(1)
+            let request_params = '';
+            if (searchParams.has('page')) {
+                // If 'page' parameter was set up
+                request_params += `&page=${searchParams.get('page')}`;
+            }
+
+            if (searchParams.has('search')) {
+                // if 'search' parameter was set up
+                request_params += `&search=${searchParams.get('search')}`;
+            }
+
+            if (searchParams.has('ordering')) {
+                // if 'ordering' parameter was set up
+                request_params += `&ordering=${searchParams.get('ordering')}`;
+            }
+
+            const response = await getCharacters(request_params)
             const data = await response.json()
             console.log(data);
             setCharacters(data);
