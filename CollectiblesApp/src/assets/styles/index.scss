@@ -4,79 +4,54 @@ body {
     margin-left: 15%;
     margin-right: 15%;
     overflow-x: hidden;
-
     color: #fff;
     background-color: #000;
 }
 
-a {
+a,
+h1,
+h2,
+p,
+button,
+input,
+select {
     color: #FFF;
-    font-family: Ingrid Darling;
-    font-size: 40px;
-    font-style: normal;
+    font-family: 'Passion One', sans-serif;
     font-weight: 400;
     line-height: normal;
+}
+
+a {
+    font-size: 40px;
     text-decoration: none;
 }
 
 h1 {
-    color: #FFF;
-    font-family: Passion One;
     font-size: 46px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-decoration: none;
 }
 
 h2 {
-    color: #FFF;
-    font-family: Passion One;
     font-size: 42px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-decoration: none;
 }
 
 p {
-    color: #FFF;
-    font-family: Passion One;
     font-size: 32px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
     width: 100%;
 }
 
-button {
+button,
+input,
+select {
     padding: 5px;
     border-style: none;
     border-radius: 5px;
     background-color: #fff;
     color: #000;
-
-    font-family: Passion One;
     font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-
     align-items: center;
 }
 
-input {
-    padding: 5px;
-    border-style: none;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #000;
-
-    font-family: Passion One;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-
-    align-items: center;
+select {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
