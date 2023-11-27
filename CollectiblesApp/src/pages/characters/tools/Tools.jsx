@@ -2,18 +2,16 @@ import React from "react";
 import styles from './Tools.module.scss';
 import SearchBar from './SearchBar';
 import Filtering from './Filtering'
+import Pagination from "./Pagination";
 
-const Tools = () => {
+const Tools = ({ totalPages, currentPage }) => {
 
 
     return (
         <>
             <Filtering />
             <SearchBar />
-
-            <div className={styles.pages}>
-                {/* TODO: Implement pages */}
-            </div>
+            <Pagination totalPages={totalPages} currentPage={currentPage} />
         </>
     );
 };
