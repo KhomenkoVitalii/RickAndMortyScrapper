@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from "react";
-import styles from './Tools.module.scss'
-import SearchBar from './SearchBar'
+import React from "react";
+import styles from './Tools.module.scss';
+import SearchBar from './SearchBar';
+import Filtering from './Filtering'
 
 const Tools = () => {
+
+
     return (
         <>
-            <button
-                className={styles.filter}
-                onClick={() => { console.log("Hihi-Haha"); }}>
-                Order by "Name"
-                <img src="/arrow_up.svg" alt="filter" />
-            </button>
-
+            <Filtering />
             <SearchBar />
 
             <div className={styles.pages}>
-
+                {/* TODO: Implement pages */}
             </div>
         </>
-    )
+    );
 };
 
 export default Tools;
