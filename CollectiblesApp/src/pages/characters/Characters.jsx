@@ -43,10 +43,21 @@ const Characters = () => {
         fetchData();
     }, [searchParams]);
 
+    const totalPages = characters
+        ? Math.ceil(characters.count / characters.results.length)
+        : 0;
+
+    const currentPage =
+        characters && characters.next
+            ? characters.next.split("page=")[1] - 1
+            : characters && characters.previous
+                ? characters.previous.split("page=")[1] + 1
+                : 0;
+
     return <>
         <div className={styles.body}>
             <div className={styles.header}>
-                <Tools />
+                <Tools totalPages={totalPages} currentPage={currentPage} />
             </div>
             <div className={styles.items}>
                 {characters && characters.results.map((character, key) => (
