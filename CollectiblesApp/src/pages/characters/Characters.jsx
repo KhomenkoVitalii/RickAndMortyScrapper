@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getCharacters } from "../../api/characters";
+import { getCharactersRequest } from "../../api/characters";
 import styles from "./Characters.module.scss";
 import Tools from "./tools/Tools";
 import Card from "../../components/card/Card"
@@ -9,7 +9,7 @@ const Characters = () => {
     const [characters, setCharacters] = useState(null);
     const [searchParams] = useSearchParams();
 
-    const getEpisodes = useMemo(() => async () => {
+    const getCharacters = useMemo(() => async () => {
         try {
             let request_params = '';
             if (searchParams.has('page')) {
@@ -27,7 +27,7 @@ const Characters = () => {
                 request_params += `&ordering=${searchParams.get('ordering')}`;
             }
 
-            const response = await getCharacters(request_params)
+            const response = await getCharactersRequest(request_params)
             const data = await response.json()
             console.log(data);
             setCharacters(data);
@@ -38,7 +38,7 @@ const Characters = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            getEpisodes()
+            getCharacters()
         };
         fetchData();
     }, [searchParams]);
