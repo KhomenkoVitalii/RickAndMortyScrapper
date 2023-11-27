@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import styles from './SearchBar.module.scss';
 import { searchForCharacters } from '../../../api/characters';
 
@@ -8,8 +8,7 @@ const SearchBar = () => {
     const [value, setValue] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [hideSuggestions, setHideSuggestions] = useState(true);
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // Executed only once 
     // Checks is the url contains any search params
@@ -27,7 +26,6 @@ const SearchBar = () => {
                 if (value != '') {
                     const response = await searchForCharacters(value);
                     const data = await response.json();
-
                     setSuggestions(data.results);
                 }
             } catch (error) {
@@ -40,12 +38,13 @@ const SearchBar = () => {
 
     const changeUrl = (url) => {
         if (url && url != '') {
-            navigate(`/characters/?search=${url}`);
+            searchParams.set('search', url);
         } else if (value != '') {
-            navigate(`/characters/?search=${value}`);
+            searchParams.set('search', value);
         } else {
-            navigate(`/characters/`);
+            searchParams.delete('search');
         }
+        setSearchParams(searchParams);
     }
 
     // When confirm search
