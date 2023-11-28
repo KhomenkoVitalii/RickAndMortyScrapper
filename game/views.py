@@ -5,12 +5,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from scrapper.models import Character
 from scrapper.serializer import CharacterSerializer
-from game.models import UserCard
+from game.models import UserCard, User
 from game.mixins import LikeModelMixin
 from game.serializers import UserCardSerializer
 from game.forms import RegisterUserForm, LoginUserForm
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
 
 def home(request):
@@ -77,5 +80,40 @@ class UserCardView(ModelViewSet, LikeModelMixin):
     serializer_class = UserCardSerializer
     permission_classes = [IsAuthenticated]
 
+    def list(self, request, *args, **kwargs):
+        """
+        Get all user cards for the authorized user.
+        """
+        user_cards = UserCard.objects.filter(user_id=self.request.user)
+        serializer = UserCardSerializer(user_cards, many=True)
+        return Response(serializer.data)
+
+    def get_cards_of_chosen_user(self, request, user_id):
+        # Filter user cards for the specified user ID
+        chosen_cards = UserCard.objects.filter(user_id=user_id)
+        serializer = UserCardSerializer(chosen_cards, many=True)
+        return Response(serializer.data)
+
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user)
+
+
+class AnotherUserCardsView(GenericViewSet):
+    queryset = UserCard.objects.all()
+    serializer_class = UserCardSerializer
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        user = self.kwargs.get('user')
+
+        if not user:
+            return Response({"message": "user not provided!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user_obj = User.objects.get(username=user)
+        except User.DoesNotExist:
+            return Response({"message": "user not found!"}, status=status.HTTP_404_NOT_FOUND)
+
+        chosen_cards = UserCard.objects.filter(user_id=user_obj.id)
+        serializer = UserCardSerializer(chosen_cards, many=True)
+        return Response(serializer.data)
