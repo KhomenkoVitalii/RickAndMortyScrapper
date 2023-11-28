@@ -25,17 +25,26 @@ class CharacterSpider:
             raise requests.exceptions.RequestException
 
     def try_parse_image(self, character_instance, image_url):
-        image_content = self.download_image(image_url)
-        if image_content:
-            image_file = ContentFile(
-                image_content, name=f"character_{character_instance.name}_{character_instance.species or 'ordinary'}.jpg")
-            character_instance.image.save(
-                image_file.name, image_file, save=True)
-            print(
-                f"Saved Character: {character_instance.name} with image")
-        else:
-            print(
-                f"Failed to download image for Character: {character_instance.name}")
+        try:
+            image_content = self.download_image(image_url)
+            if image_content:
+                image_file = ContentFile(
+                    image_content, name=f"character_{character_instance.name}_{character_instance.species or 'ordinary'}.jpg")
+                character_instance.image.save(
+                    image_file.name, image_file, save=True)
+                print(
+                    f"Saved Character: {character_instance.name} with image")
+            else:
+                print(
+                    f"Failed to download image for Character: {character_instance.name}")
+        except requests.exceptions.ConnectionError:
+            print(f"Connection error: {e}")
+        except requests.exceptions.TooManyRedirects:
+            print(f"Too many redirects: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
 
     def create_character_origin(self, character, character_data):
         # create character origin
