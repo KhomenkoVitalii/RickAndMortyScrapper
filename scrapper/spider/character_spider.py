@@ -43,8 +43,6 @@ class CharacterSpider:
             print(f"Too many redirects: {e}")
         except requests.exceptions.RequestException as e:
             print(f"Request error: {e}")
-        except Exception as e:
-            print(f"Unexpected error: {e}")
 
     def create_character_origin(self, character, character_data):
         # create character origin
@@ -65,37 +63,40 @@ class CharacterSpider:
             Origin.objects.create(
                 name='unknown', url='', character_id=character).save()
 
+    def save_character(self, character_data):
+        # Create an instance of the model
+        character_instance = Character()
+
+        character_instance.name = character_data.get('name')
+        character_instance.status = character_data.get('status')
+        character_instance.species = character_data.get('species')
+        character_instance.type = character_data.get('type')
+        character_instance.gender = character_data.get('gender')
+        character_instance.url = character_data.get('url')
+        character_instance.created = character_data.get('created')
+
+        try:
+            location = Location.objects.get(
+                name=character_data['location']['name'])
+            character_instance.location = location
+        except Location.DoesNotExist:
+            character_instance.location = None
+
+        # Download and save the image
+        image_url = character_data.get('image')
+        self.try_parse_image(character_instance, image_url)
+
+        # Save the model instance to the database
+        character_instance.save()
+
+        self.create_character_origin(
+            character=character_instance, character_data=character_data)
+
     def parse(self, data):
         characters = data['results']
 
         for character_data in characters:
-            # Create an instance of the model
-            character_instance = Character()
-
-            character_instance.name = character_data.get('name')
-            character_instance.status = character_data.get('status')
-            character_instance.species = character_data.get('species')
-            character_instance.type = character_data.get('type')
-            character_instance.gender = character_data.get('gender')
-            character_instance.url = character_data.get('url')
-            character_instance.created = character_data.get('created')
-
-            try:
-                location = Location.objects.get(
-                    name=character_data['location']['name'])
-                character_instance.location = location
-            except Location.DoesNotExist:
-                character_instance.location = None
-
-            # Download and save the image
-            image_url = character_data.get('image')
-            self.try_parse_image(character_instance, image_url)
-
-            # Save the model instance to the database
-            character_instance.save()
-
-            self.create_character_origin(
-                character=character_instance, character_data=character_data)
+            self.save_character(character_data)
 
         # Check for pagination
         next_page = data['info']['next']
