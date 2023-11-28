@@ -1,18 +1,27 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
-from .fixtures import user, authorized_client, character_card, usercard
+from game.tests.fixtures import user, authorized_client, character_card, usercard
+from game.models import UserCard, User
+from game.serializers import UserCardSerializer
 
 
 @pytest.mark.django_db
 class TestUserCardApi:
-    def test_get_user_card_list(self, authorized_client, usercard):
-        url = reverse('usercard-list')
-        response = authorized_client.get(url)
+    def test_list_authenticated_user(self, user, authorized_client, character_card, usercard):
+        response = authorized_client.get(reverse('usercard-list'))
 
         assert response.status_code == status.HTTP_200_OK
-        response_count = response.data.get('count', 0)
-        assert response_count == 1, "Must be '1'"
+        assert len(response.data) == 1
+        assert response.data[0]['user_id'] == usercard.user_id.id
+
+    def test_list_another_user_cards(self, user, authorized_client, usercard):
+        response = authorized_client.get(
+            reverse('collection-list', kwargs={'user': user.username}))
+
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data) == 1
+        assert response.data[0]['user_id'] == usercard.user_id.id
 
     def test_get_user_card(self, authorized_client, usercard):
         url = reverse('usercard-detail', args=[usercard.id])
