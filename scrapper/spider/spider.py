@@ -13,4 +13,4 @@ class Spider:
             print(f"Error making initial request: {e}")
 
     def parse(self):
-        raise NotImplemented
+        raise NotImplementedError
