@@ -49,17 +49,21 @@ class CharacterSpider:
     def create_character_origin(self, character, character_data):
         # create character origin
         url = character_data['origin']['url']
-        if url:
-            response = requests.get(url)
-            if response.status_code == 200:
-                origin_data = response.json()
-                if origin_data['name']:
-                    location = Location.objects.get(name=origin_data['name'])
-                    Origin.objects.create(
-                        name=origin_data['name'], url=origin_data['url'], character_id=character, location=location).save()
-                else:
-                    Origin.objects.create(
-                        name='unknown', url='', character_id=character).save()
+        if not url:
+            return
+
+        response = requests.get(url)
+        if response.status_code != 200:
+            return
+
+        origin_data = response.json()
+        if origin_data['name']:
+            location = Location.objects.get(name=origin_data['name'])
+            Origin.objects.create(
+                name=origin_data['name'], url=origin_data['url'], character_id=character, location=location).save()
+        else:
+            Origin.objects.create(
+                name='unknown', url='', character_id=character).save()
 
     def parse(self, data):
         characters = data['results']
