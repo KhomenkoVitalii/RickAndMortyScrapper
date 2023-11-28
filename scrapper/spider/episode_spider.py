@@ -1,7 +1,7 @@
 import requests
 from scrapper.models import Episode, Character
 from django.core.files.base import ContentFile
-from scrapper.spider import Spider
+from scrapper.spider.spider import Spider
 
 
 class EpisodeSpider(Spider):

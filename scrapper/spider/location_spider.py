@@ -1,14 +1,10 @@
 import requests
 from scrapper.serializer import LocationSerializer
+from scrapper.spider.spider import Spider
 
 
-class LocationSpider:
+class LocationSpider(Spider):
     base_url = 'https://rickandmortyapi.com/api/location/'
-
-    def start_requests(self):
-        response = requests.get(self.base_url)
-        if response.status_code == 200:
-            self.parse(response.json())
 
     def parse(self, data):
         locations = data['results']

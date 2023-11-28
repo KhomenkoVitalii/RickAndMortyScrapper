@@ -2,7 +2,7 @@ import requests
 from scrapper.models import Character, Location, Origin
 from django.core.files.base import ContentFile
 from rest_framework import response as rest_response
-from scrapper.spider import Spider
+from scrapper.spider.spider import Spider
 
 
 class CharacterSpider(Spider):
