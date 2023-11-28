@@ -1,23 +1,20 @@
-footer {
+.footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     padding: 10px;
     background-color: #333;
-
-    position: absolute;
+    position: fixed;
     bottom: 0;
+    left: 0;
     right: 0;
-
     padding-left: 30px;
     padding-right: 30px;
-
-    width: 100vw;
-
     height: 50px;
-
     box-sizing: border-box;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(0);
+
 
     .links {
         display: flex;
@@ -26,6 +23,8 @@ footer {
 
         a {
             margin-left: 30px;
+            text-decoration: none;
+            color: white;
         }
     }
 
@@ -34,4 +33,5 @@ footer {
         bottom: -5px;
         max-height: 30px;
     }
+
 }
