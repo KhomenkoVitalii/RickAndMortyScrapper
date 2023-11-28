@@ -1,21 +1,28 @@
 import requests
 from scrapper.models import Character, Location, Origin
 from django.core.files.base import ContentFile
+from rest_framework import response as rest_response
 
 
 class CharacterSpider:
     base_url = 'https://rickandmortyapi.com/api/character/'
 
     def start_requests(self):
-        response = requests.get(self.base_url)
-        if response.status_code == 200:
+        try:
+            response = requests.get(self.base_url)
+            response.raise_for_status()
             self.parse(response.json())
+        except requests.exceptions.RequestException as e:
+            print(f"Error making initial request: {e}")
 
     def download_image(self, url):
-        response = requests.get(url)
-        if response.status_code == 200:
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
             return response.content
-        return None
+        except requests.exceptions.RequestException as e:
+            print(f"Error while fetching image by url {url}: {e}")
+            raise requests.exceptions.RequestException
 
     def try_parse_image(self, character_instance, image_url):
         image_content = self.download_image(image_url)
