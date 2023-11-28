@@ -1,11 +1,32 @@
 body {
     padding: 0;
     margin: 0;
-    margin-left: 15%;
-    margin-right: 15%;
     overflow-x: hidden;
     color: #fff;
     background-color: #000;
+
+    width: 90%;
+    margin: 0 auto;
+
+    @media (min-width: 475px) {
+        width: 90%; // Decrease width for larger screens
+    }
+
+    @media (min-width: 640px) {
+        width: 85%;
+    }
+
+    @media (min-width: 768px) {
+        width: 80%;
+    }
+
+    @media (min-width: 1280px) {
+        width: 75%;
+    }
+
+    @media (min-width: 1536px) {
+        width: 70%;
+    }
 }
 
 a,
@@ -21,21 +42,15 @@ select {
     line-height: normal;
 }
 
+h1 {
+    text-shadow: 10px 15px 6px rgba(255, 255, 255, 0.20);
+}
+
 a {
-    font-size: 40px;
     text-decoration: none;
 }
 
-h1 {
-    font-size: 46px;
-}
-
-h2 {
-    font-size: 42px;
-}
-
 p {
-    font-size: 32px;
     width: 100%;
 }
 
@@ -47,11 +62,116 @@ select {
     border-radius: 5px;
     background-color: #fff;
     color: #000;
-    font-size: 24px;
     align-items: center;
+    font-size: 24px; // Default font size
+
+    @media (min-width: 475px) {
+        font-size: 22px;
+    }
+
+    @media (min-width: 640px) {
+        font-size: 24px;
+    }
+
+    @media (min-width: 768px) {
+        font-size: 24px;
+    }
+
+    @media (min-width: 1280px) {
+        font-size: 24px;
+    }
+
+    @media (min-width: 1536px) {
+        font-size: 24px;
+    }
 }
 
-select {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+@media (min-width: 475px) {
+    a {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 36px;
+    }
+
+    p {
+        font-size: 24px;
+    }
+
+    h1 {
+        font-size: 50px;
+    }
+}
+
+@media (min-width: 640px) {
+    a {
+        font-size: 22px;
+    }
+
+    h1 {
+        font-size: 54px;
+    }
+
+    h2 {
+        font-size: 26px;
+    }
+
+    p {
+        font-size: 22px;
+    }
+}
+
+@media (min-width: 768px) {
+    a {
+        font-size: 24px;
+    }
+
+    h1 {
+        font-size: 76px;
+    }
+
+    h2 {
+        font-size: 36px;
+    }
+
+    p {
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 1280px) {
+    a {
+        font-size: 36px;
+    }
+
+    h1 {
+        font-size: 90px;
+    }
+
+    h2 {
+        font-size: 42px;
+    }
+
+    p {
+        font-size: 28px;
+    }
+}
+
+@media (min-width: 1536px) {
+    a {
+        font-size: 40px;
+    }
+
+    h1 {
+        font-size: 96px;
+    }
+
+    h2 {
+        font-size: 42px;
+    }
+
+    p {
+        font-size: 32px;
+    }
 }
