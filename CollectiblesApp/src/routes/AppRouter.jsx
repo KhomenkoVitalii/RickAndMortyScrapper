@@ -7,6 +7,7 @@ import Seasons from '../pages/seasons/Seasons';
 import Characters from '../pages/characters/Characters';
 import IsAuthorized from '../utils/IsAuthorized';
 import SignIn from '../components/signin/SignIn';
+import SignUp from '../components/signup/SignUp';
 import AuthPage from '../pages/auth/AuthPage';
 import MyCollection from '../pages/myCollection/MyCollection';
 
@@ -43,7 +44,8 @@ const router = createBrowserRouter([
                         element: <SignIn />
                     },
                     {
-
+                        path: 'sign-up/',
+                        element: <SignUp />
                     },
                 ],
             },
