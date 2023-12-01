@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBrowserRouter, useNavigate } from 'react-router-dom'
 import App from '../pages/App'
 import Home from '../pages/home/Home'
@@ -13,13 +13,15 @@ import MyCollection from '../pages/myCollection/MyCollection';
 
 const PrivateRoute = ({ component: Component, is_authorized, redirectPath, ...args }) => {
     const navigate = useNavigate();
-    if (is_authorized) {
-        return <Component {...args} />;
-    } else {
-        console.log("User is not authorized!");
-        navigate(redirectPath);
-        return null;
-    }
+
+    useEffect(() => {
+        if (!is_authorized) {
+            console.log("User is not authorized!");
+            navigate(redirectPath);
+        }
+    }, [is_authorized, navigate, redirectPath]);
+
+    return is_authorized ? <Component {...args} /> : null;
 };
 
 const router = createBrowserRouter([
