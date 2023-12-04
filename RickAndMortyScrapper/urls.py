@@ -1,22 +1,33 @@
-"""
-URL configuration for RickAndMortyScrapper project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from rest_framework import routers
+from django.urls import path, include
+from game.views import sign_in, sign_up, logout_request, home, UserCardView, AnotherUserCardsView
+from scrapper.views import LocationView, CharacterView, EpisodeView, SeasonEpisodeView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
+    path('sign-up/', sign_up, name='register'),
+    path('sign-in/', sign_in, name='login'),
+    path('logout/', logout_request, name="logout"),
     path('admin/', admin.site.urls),
+    path('home/', view=home, name='home'),
+    path('api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
+
+router = routers.DefaultRouter()
+router.register(r'api/usercard', UserCardView, basename='usercard')
+router.register(r'api/location', LocationView, basename='location')
+router.register(r'api/character', CharacterView, basename='character')
+router.register(r'api/episode', EpisodeView, basename='episode')
+router.register(r'api/seasons-list', SeasonEpisodeView,
+                basename='seasons-list')
+router.register(
+    r'api/collection/(?P<user>[^/]+)', AnotherUserCardsView, basename='collection')
+
+
+urlpatterns += router.urls
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
