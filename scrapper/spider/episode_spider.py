@@ -2,17 +2,22 @@ import requests
 from scrapper.models import Episode, Character
 from django.core.files.base import ContentFile
 from scrapper.spider.spider import Spider
+from RickAndMortyScrapper.settings import PUBLIC_IP
 
 
 class EpisodeSpider(Spider):
     base_url = 'https://rickandmortyapi.com/api/episode/'
+    URL = f"{PUBLIC_IP}/api/episode/"
 
     def assign_characters_to_the_episode(self, episode, characters_urls):
         for character_url in characters_urls:
             character_data = self.get_character(character_url)
             try:
+                url = f"{PUBLIC_IP}/api/character/{character_data['id']}/"
+                print(url)
+
                 character = Character.objects.get(
-                    url=character_data.get('url'),
+                    url=url,
                 )
             except Character.DoesNotExist:
                 print(f"Character {character_data['name']} doesn't exist!")
@@ -24,7 +29,6 @@ class EpisodeSpider(Spider):
     def get_character(self, character_url):
         # make request
         response = requests.get(character_url)
-
         if not response.status_code == 200:
             print(
                 f"Error while fetching character: {response.status_code}")
@@ -40,7 +44,7 @@ class EpisodeSpider(Spider):
         episode_instance.name = episode_data.get('name')
         episode_instance.air_date = episode_data.get('air_date')
         episode_instance.episode = episode_data.get('episode')
-        episode_instance.url = episode_data.get('url')
+        episode_instance.url = f"{self.URL}{episode_data.get('id')}/"
         episode_instance.created = episode_data.get('created')
 
         # Save the model instance to the database
