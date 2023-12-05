@@ -3,10 +3,12 @@ from scrapper.models import Character, Location, Origin
 from django.core.files.base import ContentFile
 from rest_framework import response as rest_response
 from scrapper.spider.spider import Spider
+from RickAndMortyScrapper.settings import PUBLIC_IP
 
 
 class CharacterSpider(Spider):
     base_url = 'https://rickandmortyapi.com/api/character/'
+    URL = f"{PUBLIC_IP}/api/character/"
 
     def download_image(self, url):
         try:
@@ -65,7 +67,7 @@ class CharacterSpider(Spider):
         character_instance.species = character_data.get('species')
         character_instance.type = character_data.get('type')
         character_instance.gender = character_data.get('gender')
-        character_instance.url = character_data.get('url')
+        character_instance.url = f"{self.URL}{character_data.get('id')}/"
         character_instance.created = character_data.get('created')
 
         try:
