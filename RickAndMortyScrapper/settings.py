@@ -28,6 +28,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+PUBLIC_IP = os.getenv('PUBLIC_IP')
+
+AUTH_USER_MODEL = 'game.AppUser'
+
 ALLOWED_HOSTS = []
 
 CORS_ALLOWED_ORIGINS = [
@@ -95,7 +99,6 @@ WSGI_APPLICATION = 'RickAndMortyScrapper.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-print(os.getenv('DB_HOST'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
