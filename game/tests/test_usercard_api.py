@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from game.tests.fixtures import user, authorized_client, character_card, usercard
-from game.models import UserCard, User
+from game.models import UserCard, AppUser
 from game.serializers import UserCardSerializer
 
 

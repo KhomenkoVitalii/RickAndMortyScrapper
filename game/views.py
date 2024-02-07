@@ -1,5 +1,6 @@
 import random
 from django.http import JsonResponse
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model, login, logout
 from scrapper.models import Character
 from scrapper.serializer import CharacterSerializer
@@ -11,11 +12,18 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from rest_framework.authtoken.models import Token
+
 
 User = get_user_model()
 
 
 class HomeView(APIView):
+    """
+    `HomeView` is a view in Django that handles the logic for the home page of the
+    application. It is an API view that has method 'get' which returns 4 random characters for the main page
+    (`permissions.AllowAny`).
+    """
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
@@ -36,15 +44,14 @@ class UserRegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):
-        # TODO: ADD CUSTOM DATA VALIDATORS
-        # clean_data = custom_validation(request.data)
-        clean_data = request.data
-        serializer = UserRegisterSerializer(data=clean_data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.create(clean_data)
-            if user:
-                return Response(user, status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserRegisterSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            token = Token.objects.create(user=user)
+            return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            return Response({'error': e.messages}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLoginView(APIView):
@@ -53,17 +60,32 @@ class UserLoginView(APIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        # TODO: ADD CUSTOM DATA VALIDATORS
-        # assert validate_data(data)
-        # assert validate_password(data)
         serializer = UserLoginSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
+        try:
+            serializer.is_valid(raise_exception=True)
             user = serializer.check_user(data)
+            token, created = Token.objects.get_or_create(user=user)
             login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+
+            response_data = {
+                "message": "Login successful!",
+                "token": token.key,
+                "user": {
+                    "username": user.username,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name
+                }
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            return Response({'error': e.messages}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UserLogoutView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)
@@ -91,9 +113,6 @@ class UserCardView(ModelViewSet, LikeModelMixin):
     permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
-        """
-        Get all user cards for the authorized user.
-        """
         user_cards = UserCard.objects.filter(user_id=self.request.user)
         serializer = UserCardSerializer(user_cards, many=True)
         return Response(serializer.data)
