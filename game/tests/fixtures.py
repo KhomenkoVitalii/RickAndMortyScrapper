@@ -1,6 +1,6 @@
 import pytest
 from scrapper.models import Character
-from game.models import User, UserCard
+from game.models import AppUser as User, UserCard
 from rest_framework.test import APIClient, force_authenticate
 
 

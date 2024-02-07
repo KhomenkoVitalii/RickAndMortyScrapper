@@ -1,33 +1,30 @@
 from django.contrib import admin
-from rest_framework import routers
-from django.urls import path, include
-from game.views import sign_in, sign_up, logout_request, home, UserCardView, AnotherUserCardsView
-from scrapper.views import LocationView, CharacterView, EpisodeView, SeasonEpisodeView
 from django.conf import settings
+from django.urls import path, include
 from django.conf.urls.static import static
+from rest_framework import routers
+from game import views
+from scrapper.views import LocationView, CharacterView, EpisodeView, SeasonEpisodeView
 
 urlpatterns = [
-    path('sign-up/', sign_up, name='register'),
-    path('sign-in/', sign_in, name='login'),
-    path('logout/', logout_request, name="logout"),
+    path('api/v1/sign-up/', views.UserRegisterView.as_view(), name='register'),
+    path('api/v1/sign-in/', views.UserLoginView.as_view(), name='login'),
+    path('api/v1/logout/', views.UserLogoutView.as_view(), name="logout"),
+    path('api/v1/me/', views.UserView.as_view(), name='personal_data'),
+    path('api/v1/home/', view=views.HomeView.as_view(), name='home'),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path('home/', view=home, name='home'),
-    path('api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
 router = routers.DefaultRouter()
-router.register(r'api/usercard', UserCardView, basename='usercard')
-router.register(r'api/location', LocationView, basename='location')
-router.register(r'api/character', CharacterView, basename='character')
-router.register(r'api/episode', EpisodeView, basename='episode')
-router.register(r'api/seasons-list', SeasonEpisodeView,
+router.register(r'api/v1/usercard', views.UserCardView, basename='usercard')
+router.register(r'api/v1/location', LocationView, basename='location')
+router.register(r'api/v1/character', CharacterView, basename='character')
+router.register(r'api/v1/episode', EpisodeView, basename='episode')
+router.register(r'api/v1/seasons-list', SeasonEpisodeView,
                 basename='seasons-list')
 router.register(
-    r'api/collection/(?P<user>[^/]+)', AnotherUserCardsView, basename='collection')
+    r'api/v1/collection/(?P<user>[^/]+)', views.AnotherUserCardsView, basename='collection')
 
 
 urlpatterns += router.urls
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)

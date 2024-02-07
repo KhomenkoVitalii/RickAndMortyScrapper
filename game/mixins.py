@@ -1,4 +1,4 @@
-from game.models import UserCard
+from game.models import UserCard, Like
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -10,20 +10,20 @@ class LikeModelMixin():
     def like_action(self, request, *args, **kwargs):
         obj = self.get_object()
 
-        if obj.is_liked:
-            return Response({"status": "You already liked this card!"}, status=status.HTTP_400_BAD_REQUEST)
+        if obj.likes.filter(user=request.user).exists():
+            return Response({"message": "You already liked this card!"}, status=status.HTTP_400_BAD_REQUEST)
 
-        obj.is_liked = True
-        obj.save()
-        return Response({"status": "liked"}, status=status.HTTP_201_CREATED)
+        Like.objects.create(user=request.user, content_object=obj).save()
+        return Response({"message": "liked"}, status=status.HTTP_201_CREATED)
 
     @action(methods=['post'], detail=True, url_name="unlike")
     def unlike_action(self, request, *args, **kwargs):
         obj = self.get_object()
 
-        if not obj.is_liked:
-            return Response({"status": "You haven't liked this card!"}, status=status.HTTP_400_BAD_REQUEST)
+        like = obj.likes.filter(user=request.user)
 
-        obj.is_liked = False
-        obj.save()
-        return Response({"status": "unliked!"}, status=status.HTTP_202_ACCEPTED)
+        if not like.exists():
+            return Response({"message": "You haven't liked this card!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        like.delete()
+        return Response({"message": "unliked!"}, status=status.HTTP_202_ACCEPTED)

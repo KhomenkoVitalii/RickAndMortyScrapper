@@ -1,95 +1,123 @@
 import random
-from django.http import JsonResponse, HttpResponseNotAllowed
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
+from django.http import JsonResponse
+from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model, login, logout
 from scrapper.models import Character
 from scrapper.serializer import CharacterSerializer
-from game.models import UserCard, User
+from game.models import UserCard, AppUser
 from game.mixins import LikeModelMixin
-from game.serializers import UserCardSerializer
-from game.forms import RegisterUserForm, LoginUserForm
+from game.serializers import UserCardSerializer, UserLoginSerializer, UserRegisterSerializer, UserSerializer
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
+from rest_framework.authtoken.models import Token
 
 
-def home(request):
-    items = list(Character.objects.all())
-
-    random_characters = random.sample(items, 4)
-
-    serialized_characters = CharacterSerializer(
-        random_characters, many=True).data
-
-    for character in serialized_characters:
-        character['image'] = request.build_absolute_uri(character['image'])
-
-    return JsonResponse({'characters': serialized_characters})
+User = get_user_model()
 
 
-def sign_in(request, *args, **kwargs):
-    if request.user.is_authenticated:
-        return redirect('/home/')
+class HomeView(APIView):
+    """
+    `HomeView` is a view in Django that handles the logic for the home page of the
+    application. It is an API view that has method 'get' which returns 4 random characters for the main page
+    (`permissions.AllowAny`).
+    """
+    permission_classes = [permissions.AllowAny]
 
-    if request.method == 'GET':
-        form = LoginUserForm()
-        return render(request, template_name='login.html', context={'login_form': form})
+    def get(self, request):
+        items = list(Character.objects.all())
 
-    username = request.POST["username"]
-    password = request.POST["password"]
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        messages.success(request, "Sign in successfully!")
-        return redirect('/home/')
-    else:
-        messages.error(request, "Incorrect data!")
+        random_characters = random.sample(items, 4)
 
-    return HttpResponseNotAllowed(['GET', 'POST'])
+        serialized_characters = CharacterSerializer(
+            random_characters, many=True).data
+
+        for character in serialized_characters:
+            character['image'] = request.build_absolute_uri(character['image'])
+
+        return JsonResponse({'characters': serialized_characters})
 
 
-def sign_up(request, *args, **kwargs):
-    if request.method == "POST":
-        # Handle form submission
-        form = RegisterUserForm(request.POST)
-        if form.is_valid():
-            user = form.save()
+class UserRegisterView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserRegisterSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            token = Token.objects.create(user=user)
+            return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            return Response({'error': e.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = [SessionAuthentication,]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = UserLoginSerializer(data=data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.check_user(data)
+            token, created = Token.objects.get_or_create(user=user)
             login(request, user)
-            messages.success(request, "Registration success!")
-            return redirect('/home/')
-        messages.error(
-            request, "Unsuccessful registration. Invalid information.")
-    if request.user.is_authenticated:
-        return redirect("/home/")
-    form = RegisterUserForm()
-    return render(request, template_name='registration.html', context={'register_form': form})
+
+            response_data = {
+                "message": "Login successful!",
+                "token": token.key,
+                "user": {
+                    "username": user.username,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name
+                }
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            return Response({'error': e.messages}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-def logout_request(request):
-    if request.user.is_authenticated:
+class UserLogoutView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
         logout(request)
+        return Response(status=status.HTTP_200_OK)
 
-    return redirect('/home/')
+
+class UserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication, ]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            pass
+        return Response({"message": "not implemented!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserCardView(ModelViewSet, LikeModelMixin):
     queryset = UserCard.objects.all()
     serializer_class = UserCardSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
-        """
-        Get all user cards for the authorized user.
-        """
         user_cards = UserCard.objects.filter(user_id=self.request.user)
         serializer = UserCardSerializer(user_cards, many=True)
         return Response(serializer.data)
 
     def get_cards_of_chosen_user(self, request, user_id):
-        # Filter user cards for the specified user ID
         chosen_cards = UserCard.objects.filter(user_id=user_id)
         serializer = UserCardSerializer(chosen_cards, many=True)
         return Response(serializer.data)
@@ -101,7 +129,7 @@ class UserCardView(ModelViewSet, LikeModelMixin):
 class AnotherUserCardsView(GenericViewSet):
     queryset = UserCard.objects.all()
     serializer_class = UserCardSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         user = self.kwargs.get('user')
