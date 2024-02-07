@@ -7,7 +7,7 @@ from RickAndMortyScrapper.settings import PUBLIC_IP
 
 class EpisodeSpider(Spider):
     base_url = 'https://rickandmortyapi.com/api/episode/'
-    URL = f"{PUBLIC_IP}/api/v1/episode/"
+    URL = "/api/v1/episode/"
 
     def assign_characters_to_the_episode(self, episode, characters_urls):
         for character_url in characters_urls:

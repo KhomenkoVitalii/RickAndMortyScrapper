@@ -6,7 +6,7 @@ from RickAndMortyScrapper.settings import PUBLIC_IP
 
 class LocationSpider(Spider):
     base_url = 'https://rickandmortyapi.com/api/location/'
-    URL = f"{PUBLIC_IP}/api/v1/location/"
+    URL = "/api/v1/location/"
 
     def parse(self, data):
         locations = data['results']

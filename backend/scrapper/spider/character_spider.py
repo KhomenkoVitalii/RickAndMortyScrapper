@@ -8,7 +8,7 @@ from RickAndMortyScrapper.settings import PUBLIC_IP
 
 class CharacterSpider(Spider):
     base_url = 'https://rickandmortyapi.com/api/character/'
-    URL = f"{PUBLIC_IP}/api/v1/character/"
+    URL = "/api/v1/character/"
 
     def download_image(self, url):
         try:
