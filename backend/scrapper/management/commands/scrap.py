@@ -7,8 +7,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Don't change order of starting requests
-        location_spider.LocationSpider().start_requests()
-        character_spider.CharacterSpider().start_requests()
+        # location_spider.LocationSpider().start_requests()
+        # character_spider.CharacterSpider().start_requests()
         episode_spider.EpisodeSpider().start_requests()
 
         self.stdout.write(

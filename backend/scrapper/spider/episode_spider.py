@@ -13,7 +13,7 @@ class EpisodeSpider(Spider):
         for character_url in characters_urls:
             character_data = self.get_character(character_url)
             try:
-                url = f"{PUBLIC_IP}/api/character/{character_data['id']}/"
+                url = f"{PUBLIC_IP}/api/v1/character/{character_data['id']}/"
                 print(url)
 
                 character = Character.objects.get(
