@@ -1,0 +1,16 @@
+.body {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.offer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        text-shadow: 10px 15px 6px rgba(255, 255, 255, 0.20);
+    }
+}

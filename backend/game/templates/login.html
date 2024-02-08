@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+</head>
+
+<body>
+    <div>
+        <h1>Login</h1>
+        <form method="POST">
+            <!-- That's cross site request forgery. 
+                    CSRF tokens are used to protect against CSRF attacks. 
+                    When the form is submitted, this token is included in the request to verify its authenticity.-->
+            {% csrf_token %}
+            {{ login_form }}
+            <button type="submit">Sign In</button>
+        </form>
+        <p>If you haven't account, <a href="/sign-up/">Register</a> instead.</p>
+    </div>
+</body>
+
+</html>

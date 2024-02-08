@@ -1,0 +1,72 @@
+.container {
+    width: 30rem;
+    position: relative;
+
+
+    form {
+        display: flex;
+        vertical-align: center;
+
+        input {
+            border: 1px solid #fff;
+            border-radius: 0px;
+            border-top-left-radius: 5px;
+
+
+            width: 100%;
+            height: 100%;
+
+            box-sizing: border-box;
+            padding: 9px 10px;
+            outline: none;
+            transition: 0.2s ease-in-out;
+        }
+
+        button {
+            cursor: pointer;
+            border-radius: 0px;
+            border-top-right-radius: 5px;
+        }
+    }
+
+    .suggestions {
+        overflow-y: scroll;
+
+        border: 1px solid #fff;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+
+        background-color: #fff;
+        color: black;
+
+        max-height: 20rem;
+        height: fit-content;
+
+        width: 99.5%;
+
+        position: absolute;
+        z-index: 10;
+
+        .hidden {
+            visibility: hidden;
+        }
+
+        .suggestion {
+            cursor: pointer;
+            box-sizing: border-box;
+            padding: 1px 10px;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+
+            p {
+                color: #000;
+                font-size: 20px;
+            }
+        }
+
+        .suggestion:hover {
+            background-color: #f3f3f3;
+        }
+    }
+}

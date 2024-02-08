@@ -1,0 +1,57 @@
+@keyframes shimmer {
+    0% {
+        color: violet;
+    }
+
+    14% {
+        color: indigo
+    }
+
+    28% {
+        color: blue
+    }
+
+    40% {
+        color: green
+    }
+
+    54% {
+        color: yellow
+    }
+
+    76% {
+        color: orange;
+    }
+
+    100% {
+        color: red;
+    }
+}
+
+.body {
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.22);
+
+    width: 200px;
+    height: 200px;
+
+    margin: 24px;
+
+    a {
+        width: 100%;
+    }
+
+    p {
+        font-size: 40px;
+        width: 100%;
+
+        &:hover {
+            animation: shimmer 3s infinite linear;
+        }
+    }
+
+}
